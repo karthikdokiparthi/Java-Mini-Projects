@@ -41,7 +41,7 @@ public class LibraryDAO {
     public static void viewBooks() {
         String sql="SELECT * FROM books";
         try(Connection con=getConnection();Statement statement=con.createStatement();ResultSet resultSet=statement.executeQuery(sql)){
-            System.out.println("==== List of Books ====");
+            System.out.println("===== List of Books =====");
             while(resultSet.next()){
                 System.out.printf("ID: %s, Title: %s, Author: %s, Publisher: %s, Year: %d, Genre: %s, Quantity: %d%n",
                         resultSet.getString("book_id"), resultSet.getString("title"), resultSet.getString("author"), resultSet.getString("publisher"),
@@ -79,7 +79,7 @@ public class LibraryDAO {
     public static void viewMembers() {
         String sql="SELECT * FROM members";
         try(Connection con=getConnection();Statement statement=con.createStatement();ResultSet resultSet=statement.executeQuery(sql)){
-            System.out.println("=== List of Members ===");
+            System.out.println("===== List of Members =====");
             while(resultSet.next()){
                 System.out.printf("ID: %s, Name: %s,Phone Number: %d%n",
                         resultSet.getInt("member_id"), resultSet.getString("name"), resultSet.getLong("phone_number"));
@@ -169,6 +169,55 @@ public class LibraryDAO {
         }catch (Exception e){
             e.printStackTrace();
             return false;
+        }
+    }
+    public static void getReturnBooks(Member member,Book book){
+        String selectIssueSql="SELECT * FROM issues WHERE member_id=? AND book_id=? AND return_date IS NULL";
+        String updateIssueSql="UPDATE issues SET return_date=? WHERE member_id=? AND book_id=? AND return_date IS NULL";
+        String updateBooksQtySql="UPDATE books SET quantity=quantity+1 WHERE book_id=?";
+        try(Connection con=getConnection();
+            PreparedStatement selectIssue=con.prepareStatement(selectIssueSql);
+            PreparedStatement updateIssue=con.prepareStatement(updateIssueSql);
+            PreparedStatement updateBooks=con.prepareStatement(updateBooksQtySql)){
+
+            selectIssue.setInt(1,member.getId());
+            selectIssue.setString(2,book.getBookId());
+            ResultSet resultSet=selectIssue.executeQuery();
+
+            if(resultSet.next()){
+                updateIssue.setDate(1,java.sql.Date.valueOf(LocalDate.now()));
+                updateIssue.setInt(2,member.getId());
+                updateIssue.setString(3,book.getBookId());
+                updateIssue.executeUpdate();
+
+                updateBooks.setString(1,book.getBookId());
+                updateBooks.executeUpdate();
+                System.out.println("Book Return Successfully");
+            }else{
+                System.out.println("No matching issued book found or already returned.");
+            }
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public static void getIssuedBooks(){
+        String sql="SELECT * FROM issues";
+        try(Connection con=getConnection();
+        Statement statement=con.createStatement();
+        ResultSet rs=statement.executeQuery(sql)){
+            System.out.println("===== ISSUED BOOKS =====");
+            while (rs.next()){
+                System.out.printf("ID: %d, Member ID: %d,Book ID: %s,Issue Date: %s,Return Date: %s%n",
+                        rs.getInt("issue_id"),
+                        rs.getInt("member_id"),
+                        rs.getString("book_id"),
+                        rs.getDate("issue_date"),
+                        rs.getDate("return_date"));
+            }
+        }catch(Exception e){
+            e.printStackTrace();
         }
     }
 }
