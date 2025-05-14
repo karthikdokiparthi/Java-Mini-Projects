@@ -72,7 +72,7 @@ public class Main {
                                     viewMembers();
                                     break;
                                 case 5:
-                                    // issuedBooks();
+                                    issueBooks();
                                     break;
                                 case 6:
                                     // returnBooks();
@@ -111,6 +111,7 @@ public class Main {
                                 viewMembers();
                                 break;
                             case 3:
+                                issueBooks();
                                 break;
                             case 4:
                                 isRun = false;
@@ -156,75 +157,36 @@ public class Main {
         LibraryDAO.insertMembers(new Member(id,name,phoneNumber));
     }
 
-    public static void addBook(){
-        System.out.print("Enter Book Id: ");
-        String bookId=scanner.next();
-        System.out.print("Enter Title: ");
-        String title=scanner.next();
-        System.out.print("Enter Author: ");
-        String author=scanner.next();
-        System.out.print("Enter Publisher: ");
-        String publisher=scanner.next();
-        System.out.print("Enter Year: ");
-        int year= scanner.nextInt();
-        scanner.nextLine();
-        System.out.print("Enter genre: ");
-        String genre= scanner.next();
-        System.out.print("Enter quantity: ");
-        int quantity=scanner.nextInt();
+    public static void addBook() {
+        Scanner scanner = new Scanner(System.in); // Make sure scanner is defined
 
-        Book book=(new Book(bookId,title,author,publisher,year,genre,quantity));
+        System.out.print("Enter Book Id: ");
+        String bookId = scanner.nextLine();
+
+        System.out.print("Enter Title: ");
+        String title = scanner.nextLine();
+
+        System.out.print("Enter Author: ");
+        String author = scanner.nextLine();
+
+        System.out.print("Enter Publisher: ");
+        String publisher = scanner.nextLine();
+
+        System.out.print("Enter Year: ");
+        int year = scanner.nextInt();
+        scanner.nextLine(); // consume leftover newline
+
+        System.out.print("Enter Genre: ");
+        String genre = scanner.nextLine();
+
+        System.out.print("Enter Quantity: ");
+        int quantity = scanner.nextInt();
+        scanner.nextLine(); // consume leftover newline if needed
+
+        Book book = new Book(bookId, title, author, publisher, year, genre, quantity);
         LibraryDAO.insertBooks(book);
     }
 
-//    public static void issuedBooks(){
-//        System.out.print("Enter Member Id: ");
-//        int memberId=scanner.nextInt();
-//        scanner.nextLine();
-//        System.out.print("Enter Book Id: ");
-//        String bookId=scanner.next();
-//
-//        Member member=null;
-//        for(Member m:membersData){
-//            if(m.getId()==memberId){
-//                member=m;
-//                break;
-//            }
-//        }
-//
-//        if(member==null){
-//            System.out.println("Member not found");
-//            return;
-//        }
-//        Book book=null;
-//        for(Book b:booksData){
-//            if(b.getBookId().equals(bookId)){
-//                book=b;
-//                break;
-//            }
-//        }
-//        if(book==null){
-//            System.out.println("Book not Found");
-//            return;
-//        }
-//
-//        if(book.getQuantity()<=0){
-//            System.out.println("Book is currently not available.");
-//            return;
-//        }
-//
-//        book.setQuantity(book.getQuantity()-1);
-//        Issue issue=new Issue();
-//        issue.setMemberId(memberId);
-//        issue.setBookId(bookId);
-//        issue.setIssueDate(LocalDate.now());
-//        issue.setReturnDate(null);
-//
-//        issueBooksData.add(issue);
-//        //issueBooksData.add(new Issue(memberId,bookId,LocalDate.now(),LocalDate.now().plusDays(14)));
-//
-//        System.out.println("Book issued successfully to " + member.getName());
-//    }
 //    public static void returnBooks(){
 //        System.out.print("Enter Member ID: ");
 //        int memberId=scanner.nextInt();
@@ -278,4 +240,69 @@ public class Main {
             return false;
         }
     }
+
+    public static void issueBooks(){
+        System.out.print("Enter Member Id: ");
+        int memberId=scanner.nextInt();
+        scanner.nextLine();
+        System.out.println("Enter Book Id: ");
+        String bookId=scanner.nextLine();
+
+        boolean issued=LibraryDAO.setIssueBooks(new Member(memberId,null,null),new Book(bookId,null,null,null,0,null,0));
+        if (issued) {
+            System.out.println("Book issued successfully.");
+        } else {
+            System.out.println("Book could not be issued. Either member or book not found or book is out of stock.");
+        }
+    }
+
+    //    public static void issuedBooks(){
+//        System.out.print("Enter Member Id: ");
+//        int memberId=scanner.nextInt();
+//        scanner.nextLine();
+//        System.out.print("Enter Book Id: ");
+//        String bookId=scanner.next();
+//
+//        Member member=null;
+//        for(Member m:membersData){
+//            if(m.getId()==memberId){
+//                member=m;
+//                break;
+//            }
+//        }
+//
+//        if(member==null){
+//            System.out.println("Member not found");
+//            return;
+//        }
+//        Book book=null;
+//        for(Book b:booksData){
+//            if(b.getBookId().equals(bookId)){
+//                book=b;
+//                break;
+//            }
+//        }
+//        if(book==null){
+//            System.out.println("Book not Found");
+//            return;
+//        }
+//
+//        if(book.getQuantity()<=0){
+//            System.out.println("Book is currently not available.");
+//            return;
+//        }
+//
+//        book.setQuantity(book.getQuantity()-1);
+//        Issue issue=new Issue();
+//        issue.setMemberId(memberId);
+//        issue.setBookId(bookId);
+//        issue.setIssueDate(LocalDate.now());
+//        issue.setReturnDate(null);
+//
+//        issueBooksData.add(issue);
+//        //issueBooksData.add(new Issue(memberId,bookId,LocalDate.now(),LocalDate.now().plusDays(14)));
+//
+//        System.out.println("Book issued successfully to " + member.getName());
+//    }
+
 }

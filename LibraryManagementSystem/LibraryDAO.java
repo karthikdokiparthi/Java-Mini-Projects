@@ -1,6 +1,7 @@
 package LibraryManagementSystem;
 
 import java.sql.*;
+import java.time.LocalDate;
 
 public class LibraryDAO {
 
@@ -127,4 +128,47 @@ public class LibraryDAO {
         }
     }
 
+    public static boolean setIssueBooks(Member member,Book book){
+        String sqlMember="SELECT * FROM members WHERE member_id=?";
+        String sqlBook="SELECT * FROM books WHERE book_id=?";
+        String sqlInsertIssue="INSERT INTO issues (member_id,book_id,issue_date) VALUES (?,?,?)";
+        String sqlUpdateBooks="UPDATE books SET quantity=quantity-1 WHERE book_id=?";
+
+        try(Connection con=getConnection();
+            PreparedStatement preparedMember=con.prepareStatement(sqlMember);
+            PreparedStatement preparedBook=con.prepareStatement(sqlBook);
+            PreparedStatement preparedIssueBook=con.prepareStatement(sqlInsertIssue);
+            PreparedStatement preparedUpdateBooks=con.prepareStatement(sqlUpdateBooks)){
+
+            preparedMember.setInt(1,member.getId());
+            ResultSet rsMember=preparedMember.executeQuery();
+           if(!rsMember.next()){
+                return false;
+           }
+
+           preparedBook.setString(1,book.getBookId());
+           ResultSet rsBook=preparedBook.executeQuery();
+           if(!rsBook.next()){
+               return false;
+           }
+
+           int quantity=rsBook.getInt("quantity");
+           if(quantity <= 0){
+               return false;
+           }
+
+           preparedIssueBook.setInt(1,member.getId());
+           preparedIssueBook.setString(2,book.getBookId());
+           preparedIssueBook.setDate(3, java.sql.Date.valueOf(LocalDate.now()));
+           preparedIssueBook.executeUpdate();
+
+           preparedUpdateBooks.setString(1,book.getBookId());
+           preparedUpdateBooks.executeUpdate();
+
+           return true;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
