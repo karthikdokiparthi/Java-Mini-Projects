@@ -48,10 +48,10 @@ public class StudentDAO {
         }
     }
 
-    public static void deleteStudent(Students students){
+    public static void deleteStudent(int id){
         String sql="DELETE FROM students WHERE roll_no=?";
         try(Connection connection=getConnection();PreparedStatement statement=connection.prepareStatement(sql)){
-            statement.setInt(1,students.getRollNo());
+            statement.setInt(1,id);
             statement.executeUpdate();
             System.out.println("✅ Student deleted successfully.");
         }catch (Exception e){
@@ -75,4 +75,40 @@ public class StudentDAO {
         }
     }
 
+    public static void searchByRollNO(Students students){
+        String sql="SELECT name,department,email_id FROM students WHERE roll_no=?";
+        try(Connection connection=getConnection();PreparedStatement preparedStatement= connection.prepareStatement(sql)){
+            preparedStatement.setInt(1,students.getRollNo());
+            ResultSet resultSet=preparedStatement.executeQuery();
+            while (resultSet.next()){
+                String name=resultSet.getString("name");
+                String department=resultSet.getString("department");
+                String emailId=resultSet.getString("email_id");
+
+                System.out.println("Student Name: "+name);
+                System.out.println("Department: "+department);
+                System.out.println("Student EmailID: "+emailId);
+            }
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public static void searchByDepartment(String department) {
+        String sql="SELECT roll_no,name,department,email_id FROM students WHERE department=?";
+        try(Connection connection=getConnection();PreparedStatement preparedStatement=connection.prepareStatement(sql)){
+            preparedStatement.setString(1,department);
+            ResultSet rs=preparedStatement.executeQuery();
+            while (rs.next()) {
+                System.out.println("Roll No: " + rs.getInt("roll_no"));
+                System.out.println("Name: " + rs.getString("name"));
+                System.out.println("Department: " + rs.getString("department"));
+                System.out.println("Email ID: " + rs.getString("email_id"));
+                System.out.println("---------------------------------");
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
 }

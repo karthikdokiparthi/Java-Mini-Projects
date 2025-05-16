@@ -20,23 +20,31 @@ public class StudentMain {
                 searchByRollNumber();
                 break;
             case 4:
-                updateStudent();
+                searchByDepartment();
                 break;
             case 5:
-                deleteStudent();
+                updateStudent();
                 break;
             case 6:
+                deleteStudent();
+                break;
+            case 7:
                 System.exit(0);
             default:
                 System.out.println("Invalid Key enter");
         }
     }
+
+
+
     public static void menu(){
         System.out.println("1. Add Student");
         System.out.println("2. View all students");
         System.out.println("3. Search by roll number");
-        System.out.println("4. Update students");
-        System.out.println("5. Delete student");
+        System.out.println("4. Search by Department");
+        System.out.println("5. Update students");
+        System.out.println("6. Delete student");
+        System.out.println("7. Exit");
     }
 
     public static void addStudent() {
@@ -67,7 +75,9 @@ public class StudentMain {
     }
 
     public static void searchByRollNumber(){
-
+        System.out.print("Enter RollNumber: ");
+        int rollNo=scanner.nextInt();
+        StudentDAO.searchByRollNO(new Students(rollNo,null,null,null));
     }
 
     public static void updateStudent(){
@@ -88,9 +98,15 @@ public class StudentMain {
     }
 
     public static void deleteStudent(){
-        System.out.print("Enter Roll NO: ");
+        System.out.print("Enter Roll NO to search: ");
         int id=scanner.nextInt();
-        StudentDAO.deleteStudent(new Students(id,null,null,null));
+        StudentDAO.deleteStudent(id);
     }
 
+    private static void searchByDepartment() {
+        scanner.nextLine();
+        System.out.print("Enter department to search: ");
+        String department=scanner.nextLine();
+        StudentDAO.searchByDepartment(department);
+    }
 }
