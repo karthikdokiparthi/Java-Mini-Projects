@@ -6,32 +6,36 @@ public class StudentMain {
     public static Scanner scanner=new Scanner(System.in);
     public static void main(String[]args){
 
-        menu();
+        boolean menuStart=true;
+        while (menuStart) {
+            menu();
 
-        int choice=scanner.nextInt();
-        switch (choice){
-            case 1:
-                addStudent();
-                break;
-            case 2:
-                viewStudents();
-                break;
-            case 3:
-                searchByRollNumber();
-                break;
-            case 4:
-                searchByDepartment();
-                break;
-            case 5:
-                updateStudent();
-                break;
-            case 6:
-                deleteStudent();
-                break;
-            case 7:
-                System.exit(0);
-            default:
-                System.out.println("Invalid Key enter");
+            int choice = scanner.nextInt();
+            switch (choice) {
+                case 1:
+                    addStudent();
+                    break;
+                case 2:
+                    viewStudents();
+                    break;
+                case 3:
+                    searchByRollNumber();
+                    break;
+                case 4:
+                    searchByDepartment();
+                    break;
+                case 5:
+                    updateStudent();
+                    break;
+                case 6:
+                    deleteStudent();
+                    break;
+                case 7:
+                    menuStart=false;
+                    break;
+                default:
+                    System.out.println("Invalid Key enter");
+            }
         }
     }
 
@@ -103,10 +107,16 @@ public class StudentMain {
         StudentDAO.deleteStudent(id);
     }
 
-    private static void searchByDepartment() {
+    public static void searchByDepartment() {
         scanner.nextLine();
         System.out.print("Enter department to search: ");
-        String department=scanner.nextLine();
+        String department = scanner.nextLine();
+
+        if (!department.isEmpty()) {
+            department = department.substring(0, 1).toUpperCase() + department.substring(1).toLowerCase();
+        }
+
         StudentDAO.searchByDepartment(department);
     }
+
 }
