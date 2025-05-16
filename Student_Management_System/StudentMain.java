@@ -71,11 +71,26 @@ public class StudentMain {
     }
 
     public static void updateStudent(){
+        System.out.print("Enter Roll No: ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
 
+        System.out.print("Enter Name: ");
+        String name = scanner.nextLine();
+
+        System.out.print("Enter Department: ");
+        String department = scanner.nextLine();
+
+        System.out.print("Enter Email ID: ");
+        String emailId = scanner.nextLine();
+
+        StudentDAO.getUpdateStudent(new Students(id,name,department,emailId));
     }
 
     public static void deleteStudent(){
-
+        System.out.print("Enter Roll NO: ");
+        int id=scanner.nextInt();
+        StudentDAO.deleteStudent(new Students(id,null,null,null));
     }
 
 }

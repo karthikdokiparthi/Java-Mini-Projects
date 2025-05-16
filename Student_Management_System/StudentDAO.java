@@ -42,9 +42,37 @@ public class StudentDAO {
             preparedStatement.setString(3,students.getDepartment());
             preparedStatement.setString(4,students.getEmailId());
             preparedStatement.executeUpdate();
-            System.out.printf("✅ Student added successfully.");
+            System.out.println("✅ Student added successfully.");
         }catch (Exception e){
             e.printStackTrace();
         }
     }
+
+    public static void deleteStudent(Students students){
+        String sql="DELETE FROM students WHERE roll_no=?";
+        try(Connection connection=getConnection();PreparedStatement statement=connection.prepareStatement(sql)){
+            statement.setInt(1,students.getRollNo());
+            statement.executeUpdate();
+            System.out.println("✅ Student deleted successfully.");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public static void getUpdateStudent(Students students){
+        String sql="UPDATE students SET name=?,department=?,email_id=? WHERE roll_no=?";
+        try(Connection connection=getConnection();PreparedStatement preparedStatement=connection.prepareStatement(sql)){
+            preparedStatement.setString(1,students.getName());
+            preparedStatement.setString(2,students.getDepartment());
+            preparedStatement.setString(3,students.getEmailId());
+            preparedStatement.setInt(4,students.getRollNo());
+            preparedStatement.executeUpdate();
+            System.out.println("✅ Student update successfully.");
+
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
 }
